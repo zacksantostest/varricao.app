@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: varrecao_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    command: npm run dev
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_NAME=varrecao_db
+      - JWT_SECRET=super_secret_key
+    depends_on:
+      - db
